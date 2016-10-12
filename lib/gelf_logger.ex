@@ -37,7 +37,7 @@ defmodule Logger.Backends.Gelf do
     Application.put_env(:logger, name, config)
 
     {:ok, socket} = :gen_udp.open(0)
-    
+
     {:ok, hostname} = :inet.gethostname
 
     {:ok, gl_host } = Keyword.get(config, :host) |> to_char_list |> :inet_parse.address
@@ -52,12 +52,12 @@ defmodule Logger.Backends.Gelf do
 
   defp log_event(level, msg, ts, md, state) do
     int_level = case level do
-      :debug -> 0
-      :info  -> 1
-      :warn  -> 2
+      :debug -> 7
+      :info  -> 5
+      :warn  -> 4
       :error -> 3
     end
-   
+
     fields = Enum.reduce(Dict.take(md, state[:metadata]), %{}, fn({k,v}, accum) ->
       Map.put(accum, "_#{k}", to_string(v))
     end)
@@ -88,7 +88,7 @@ defmodule Logger.Backends.Gelf do
       size > @max_packet_size ->
         num = div(size, @max_packet_size)
 
-        num = 
+        num =
           if (num * @max_packet_size) < size do
             num + 1
           else
@@ -117,7 +117,7 @@ defmodule Logger.Backends.Gelf do
 
   defp make_chunk(payload, id, num, seq) do
     bin = :binary.encode_unsigned(seq)
-    
+
     <<0x1e, 0x0f, id :: binary - size(8), bin :: binary - size(1), num :: binary - size(1), payload :: binary >>
   end
 

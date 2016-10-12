@@ -1,1 +1,1 @@
-%{"poison": {:hex, :poison, "2.0.1"}}
+%{"poison": {:hex, :poison, "2.0.1", "81248a36d1b602b17ea6556bfa8952492091f01af05173de11f8b297e2bbf088", [:mix], []}}
