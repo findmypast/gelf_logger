@@ -10,11 +10,12 @@ use Mix.Config
 
 config :logger,
   backends: [{Logger.Backends.Gelf, :gelf_logger}]
-  
+
 config :logger, :gelf_logger,
   host: "127.0.0.1",
   port: 12201,
   application: "myapp",
+  environment: "test",
   compression: :raw,
   metadata: [:request_id, :function, :module, :file, :line]
 

@@ -24,6 +24,7 @@ defmodule GelfLoggerTest do
 
     assert map["version"] == "1.1"
     assert map["_application"] == "myapp"
+    assert map["environment"] == "test"
     assert map["short_message"] == "test"
     assert map["long_message"] == "test"
   end

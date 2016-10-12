@@ -43,11 +43,12 @@ defmodule Logger.Backends.Gelf do
     {:ok, gl_host } = Keyword.get(config, :host) |> to_char_list |> :inet_parse.address
     port            = Keyword.get(config, :port)
     application     = Keyword.get(config, :application)
+    environment     = Keyword.get(config, :environment)
     level           = Keyword.get(config, :level)
     metadata        = Keyword.get(config, :metadata, [])
     compression     = Keyword.get(config, :compression, :gzip)
 
-    %{name: name, gl_host: gl_host, host: to_string(hostname), port: port, metadata: metadata, level: level, application: application, socket: socket, compression: compression}
+    %{name: name, gl_host: gl_host, host: to_string(hostname), port: port, metadata: metadata, level: level, application: application, environment: environment, socket: socket, compression: compression}
   end
 
   defp log_event(level, msg, ts, md, state) do
@@ -75,7 +76,8 @@ defmodule Logger.Backends.Gelf do
       host:           state[:host],
       level:          int_level,
       timestamp:      Float.round(timestamp, 3),
-      _application:   state[:application]
+      _application:   state[:application],
+      environment:    state[:environment]
     } |> Map.merge(fields)
 
     data = Poison.encode!(gelf) |> compress(state[:compression])
