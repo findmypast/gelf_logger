@@ -3,7 +3,7 @@ defmodule GelfLogger.Mixfile do
 
   def project do
     [app: :gelf_logger,
-     version: "0.2.1",
+     version: "0.2.2",
      elixir: "~> 1.1",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -25,10 +25,10 @@ defmodule GelfLogger.Mixfile do
      {:poison, ">= 1.0.0"}
    ]
   end
-  
+
   defp description do
     """
-      A Logger backend that will generate Graylog Extended Log Format messages and 
+      A Logger backend that will generate Graylog Extended Log Format messages and
       send them to a compatible server.
     """
   end
