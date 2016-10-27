@@ -40,7 +40,8 @@ defmodule Logger.Backends.Gelf do
 
     {:ok, hostname} = :inet.gethostname
 
-    {:ok, gl_host } = Keyword.get(config, :host) |> to_char_list |> :inet_parse.address
+    {:ok, {:hostent, _, _, _, _, addr_list}} = Keyword.get(config, :host) |> to_char_list |> :inet.gethostbyname
+
     port            = Keyword.get(config, :port)
     application     = Keyword.get(config, :application)
     environment     = Keyword.get(config, :environment)
@@ -48,7 +49,7 @@ defmodule Logger.Backends.Gelf do
     metadata        = Keyword.get(config, :metadata, [])
     compression     = Keyword.get(config, :compression, :gzip)
 
-    %{name: name, gl_host: gl_host, host: to_string(hostname), port: port, metadata: metadata, level: level, application: application, environment: environment, socket: socket, compression: compression}
+    %{name: name, gl_host: List.first(addr_list), host: to_string(hostname), port: port, metadata: metadata, level: level, application: application, environment: environment, socket: socket, compression: compression}
   end
 
   defp log_event(level, msg, ts, md, state) do
@@ -120,7 +121,7 @@ defmodule Logger.Backends.Gelf do
   defp make_chunk(payload, id, num, seq) do
     bin = :binary.encode_unsigned(seq)
 
-    <<0x1e, 0x0f, id :: binary - size(8), bin :: binary - size(1), num :: binary - size(1), payload :: binary >>
+    << 0x1e, 0x0f, id :: binary - size(8), bin :: binary - size(1), num :: binary - size(1), payload :: binary >>
   end
 
   defp compress(data, type) do
